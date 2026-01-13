@@ -19,12 +19,6 @@ export async function POST(request: NextRequest) {
   const formData = new FormData();
   formData.append("image_file", file);
   formData.append("size", "auto");
-  formData.append("format", "png");
-  formData.append("type", "auto");
-  formData.append("channels", "rgba");
-  formData.append("add_shadow", "true");
-  formData.append("shadow_type", "auto");
-  formData.append("shadow_opacity", "auto");
 
   const res = await fetch(apiUrl, {
     method: "POST",
