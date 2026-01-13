@@ -11,12 +11,22 @@ import { useBackgroundRemoval } from "@/hooks/useBackgroundRemoval";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 export default function BackgroundRemovalPage() {
-  const { images, processing, addFiles, removeFile, processAll, clearAll } =
-    useBackgroundRemoval();
+  const {
+    images,
+    processing,
+    addFiles,
+    removeFile,
+    processAll,
+    clearAll,
+    resetProcessed,
+  } = useBackgroundRemoval();
   const dropzoneRef = useRef<BgDropzoneRef>(null);
 
   const pendingCount = images.filter((img) => img.status === "pending").length;
   const successCount = images.filter((img) => img.status === "success").length;
+  const processedCount = images.filter(
+    (img) => img.status === "success" || img.status === "error",
+  ).length;
 
   const downloadAll = () => {
     images.forEach((image) => {
@@ -79,6 +89,16 @@ export default function BackgroundRemovalPage() {
                   >
                     <Download className="h-3 w-3" />
                     Download all
+                  </button>
+                )}
+                {processedCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={resetProcessed}
+                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                    Reset processed
                   </button>
                 )}
                 {pendingCount > 0 && (

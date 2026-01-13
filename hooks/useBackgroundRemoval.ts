@@ -97,12 +97,47 @@ export const useBackgroundRemoval = () => {
 
     setImages(processed);
     setProcessing(false);
+
+    // Show completion summary
+    const successCount = processed.filter(
+      (img) => img.status === "success",
+    ).length;
+    const errorCount = processed.filter((img) => img.status === "error").length;
+
+    if (successCount > 0 && errorCount === 0) {
+      toast.success(
+        `All ${successCount} image${successCount > 1 ? "s" : ""} processed successfully!`,
+      );
+    } else if (errorCount > 0) {
+      toast.warning(`${successCount} successful, ${errorCount} failed`);
+    }
   }, [images]);
+
+  const resetProcessed = useCallback(() => {
+    setImages((prev) =>
+      prev.map((img) => ({
+        ...img,
+        status: "pending" as const,
+        result: undefined,
+        error: undefined,
+        progress: undefined,
+      })),
+    );
+    toast.success("Images reset to initial state");
+  }, []);
 
   const clearAll = useCallback(() => {
     setImages([]);
     toast.success("All images cleared");
   }, []);
 
-  return { images, processing, addFiles, removeFile, processAll, clearAll };
+  return {
+    images,
+    processing,
+    addFiles,
+    removeFile,
+    processAll,
+    clearAll,
+    resetProcessed,
+  };
 };
