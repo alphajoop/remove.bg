@@ -47,16 +47,8 @@ export function BgPreview({ image, index, onRemove }: BgPreviewProps) {
 
         {/* Status overlay */}
         {image.status === "processing" && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/60">
-            <Spinner className="h-5 w-5 mb-2" />
-            {image.progress && (
-              <div className="w-16 h-1 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary transition-all duration-300"
-                  style={{ width: `${image.progress}%` }}
-                />
-              </div>
-            )}
+          <div className="absolute inset-0 flex items-center justify-center bg-background/60">
+            <Spinner className="h-5 w-5" />
           </div>
         )}
 
