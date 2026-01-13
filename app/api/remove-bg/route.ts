@@ -19,6 +19,12 @@ export async function POST(request: NextRequest) {
   const formData = new FormData();
   formData.append("image_file", file);
   formData.append("size", "auto");
+  formData.append("format", "png");
+  formData.append("type", "auto");
+  formData.append("channels", "rgba");
+  formData.append("add_shadow", "true");
+  formData.append("shadow_type", "auto");
+  formData.append("shadow_opacity", "auto");
 
   const res = await fetch(apiUrl, {
     method: "POST",
@@ -29,12 +35,15 @@ export async function POST(request: NextRequest) {
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    return NextResponse.json({ error: text }, { status: res.status });
+    const errorData = await res.json().catch(() => ({}));
+    const errorMessage =
+      errorData.errors?.[0]?.title ||
+      errorData.error ||
+      "Failed to process image";
+    return NextResponse.json({ error: errorMessage }, { status: res.status });
+  } else {
+    const arrayBuffer = await res.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString("base64");
+    return NextResponse.json({ result: base64 });
   }
-
-  const arrayBuffer = await res.arrayBuffer();
-  const base64 = Buffer.from(arrayBuffer).toString("base64");
-
-  return NextResponse.json({ result: base64 });
 }
